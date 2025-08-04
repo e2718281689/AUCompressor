@@ -62,5 +62,5 @@ void PluginEditor::resized()
 void PluginEditor::timerCallback()
 {
     // 从处理器获取最新的dB值并设置到响度条上
-    verticalMeter.setLevel(processorRef.GainProcessorBase->getRMS() );
+    verticalMeter.setLevel(processorRef.CompressorProcessorBase->getRMS() );
 }
