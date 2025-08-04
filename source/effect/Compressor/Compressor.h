@@ -1,0 +1,82 @@
+//
+// Created by maple on 25-8-4.
+//
+
+#ifndef COMPRESSOR_H
+#define COMPRESSOR_H
+
+#include "../ProcessorBase.h"
+#include "./cCompressor.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+
+class Compressor  : public ProcessorBase, public juce::AudioProcessorValueTreeState::Listener
+{
+public:
+    Compressor(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
+    {
+    }
+
+    ~Compressor()
+    {
+
+    }
+
+    void parameterChanged(const juce::String& parameterID, float newValue)
+    {
+
+    }
+
+    void prepareToPlay(double sampleRate, int samplesPerBlock) override
+    {
+
+    }
+
+    void processBlock(juce::AudioSampleBuffer& buffer, juce::MidiBuffer&) override
+    {
+        size_t numSamples = buffer.getNumSamples();
+
+        auto* pcm_L = buffer.getWritePointer (0);
+        auto* pcm_R = buffer.getWritePointer (1);
+
+        float *pcm = new float[2 * numSamples];
+        for (size_t i = 0; i < numSamples; ++i)
+        {
+            pcm[2 * i + 1 ]=pcm_L[i];
+            pcm[2 * i + 0 ]=pcm_R[i];
+        }
+
+        Compressor_apply(&Compressor_Unit,pcm,pcm, numSamples);
+
+        for (size_t i = 0; i < numSamples; ++i)
+        {
+            pcm_L[i] = pcm[2 * i + 1 ];
+            pcm_R[i] = pcm[2 * i + 0 ];
+        }
+
+        delete[] pcm;
+
+    }
+
+    void reset() override
+    {
+        rmsDb = 0;
+    }
+
+    float getRMS() const
+    {
+        return Compressor_Unit.rms;
+    }
+
+    const juce::String getName() const override { return "Compressor"; }
+
+private:
+
+    CompressorUnit Compressor_Unit;
+
+    float  rmsDb = 0;
+    juce::AudioProcessorValueTreeState& Apvts;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Compressor)
+};
+
+
+#endif //COMPRESSOR_H
