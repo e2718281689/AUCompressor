@@ -30,7 +30,7 @@ public:
         {
             juce::Logger::outputDebugString("gain =" + juce::String(gain));
             gain = newValue;
-         }
+        }
     }
 
     void prepareToPlay(double sampleRate, int samplesPerBlock) override
@@ -43,16 +43,6 @@ public:
     {
         //  process
         buffer.applyGain (gain);
-
-        const int numSamples = buffer.getNumSamples();
-        float channelRms0 = buffer.getRMSLevel(0, 0, numSamples);
-        float channelRms1 = buffer.getRMSLevel(1, 0, numSamples);
-
-        float totalRms = (channelRms0>channelRms1)?channelRms0:channelRms1;
-
-        rmsDb = juce::Decibels::gainToDecibels(totalRms);
-
-
     }
 
     void reset() override
@@ -60,17 +50,12 @@ public:
         gain = 0;
     }
 
-    float getRMS() const
-    {
-        return rmsDb;
-    }
 
     const juce::String getName() const override { return "Gain"; }
 
 private:
 
     float  gain;
-    float  rmsDb = 0;
     juce::AudioProcessorValueTreeState& Apvts;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Gain)
 };
