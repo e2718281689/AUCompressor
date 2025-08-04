@@ -100,7 +100,25 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     AudioChain.AudioGroupInit();
 
     // add ProcessorNode
-    AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
+    auto node = AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
+
+
+    // 步骤 1: 从 Node 中获取通用的 AudioProcessor 指针
+    juce::AudioProcessor* genericProcessor = node->getProcessor();
+
+    // 步骤 2: 使用 dynamic_cast 进行安全的类型转换
+    GainProcessorBase = dynamic_cast<Gain*>(genericProcessor);
+
+    if (GainProcessorBase)
+    {
+        // 转换成功！现在可以安全地调用 ProcessorBase 中的函数了
+        juce::Logger::outputDebugString("Successfully casted. Processor name is: " + GainProcessorBase->getName());
+    }
+    else
+    {
+        // 转换失败。这可能是一个输入/输出节点，或者其他类型的节点
+        juce::Logger::outputDebugString("Failed to cast. This is not a ProcessorBase instance.");
+    }
 
 }
 

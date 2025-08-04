@@ -3,11 +3,13 @@
 #include "PluginProcessor.h"
 #include "BinaryData.h"
 #include "melatonin_inspector/melatonin_inspector.h"
+#include "./GUI/LoudnessMeter.h"
 
 using SliderVts = juce::AudioProcessorValueTreeState::SliderAttachment;
 
 //==============================================================================
 class PluginEditor : public juce::AudioProcessorEditor
+                    ,public juce::Timer // 继承Timer
 {
 public:
     explicit PluginEditor (PluginProcessor&);
@@ -18,12 +20,12 @@ public:
     void resized() override;
 
     juce::Slider gainSlider;
-
+    LoudnessMeter verticalMeter;
 
 private:
 
 
-
+    void timerCallback() override; // 声明回调
 
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
