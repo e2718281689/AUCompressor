@@ -6,18 +6,18 @@
 #define COMPRESSOR_H
 
 #include "../ProcessorBase.h"
-#include "./cVolume.h"
+#include "./cCompressor.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class Volume  : public ProcessorBase, public juce::AudioProcessorValueTreeState::Listener
+class Compressor  : public ProcessorBase, public juce::AudioProcessorValueTreeState::Listener
 {
 public:
-    Volume(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
+    Compressor(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
     {
         Apvts.addParameterListener("rms_time_Slider", this);
     }
 
-    ~Volume()
+    ~Compressor()
     {
         Apvts.removeParameterListener("rms_time_Slider", this);
     }
@@ -82,7 +82,7 @@ private:
 
     float  rmsDb = 0;
     juce::AudioProcessorValueTreeState& Apvts;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Volume)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Compressor)
 };
 
 
