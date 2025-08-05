@@ -101,10 +101,10 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     // add ProcessorNode
     // AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
-    auto node = AudioChain.addProcessorNode(std::make_unique < Volume >(apvts));
+    auto node = AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts));
 
 
-    VolumeBase = dynamic_cast<Volume*>(node->getProcessor());
+    VolumeBase = dynamic_cast<VolumeProc*>(node->getProcessor());
 
     if (VolumeBase)
     {

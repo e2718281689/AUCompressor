@@ -1,8 +1,9 @@
 #pragma once
 
+#include "./effect/Compressor/Compressor.h"
 #include "./effect/Gain.h"
 #include "./effect/ProcessorGroup.h"
-#include "./effect/Volume/Volume.h"
+#include "./effect/Volume/VolumeProc.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
 #if (MSVC)
@@ -46,7 +47,7 @@ public:
 
     ProcessorGroup<> AudioChain;
 
-    Volume* VolumeBase;
+    VolumeProc* VolumeBase;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
