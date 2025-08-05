@@ -8,16 +8,16 @@
 #include "./ProcessorBase.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class Gain  : public ProcessorBase, public juce::AudioProcessorValueTreeState::Listener
+class GainProc  : public ProcessorBase, public juce::AudioProcessorValueTreeState::Listener
 {
 public:
-    Gain(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
+    GainProc(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
     {
         // add Listener
         Apvts.addParameterListener("gainSlider", this);
     }
 
-    ~Gain()
+    ~GainProc()
     {
         // remove Listener
         Apvts.removeParameterListener("gainSlider", this);
@@ -51,13 +51,13 @@ public:
     }
 
 
-    const juce::String getName() const override { return "Gain"; }
+    const juce::String getName() const override { return "GainProc"; }
 
 private:
 
     float  gain;
     juce::AudioProcessorValueTreeState& Apvts;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Gain)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GainProc)
 };
 
 
