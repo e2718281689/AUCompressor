@@ -22,6 +22,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
     addAndMakeVisible(gainSlider);
 
+    rms_time_Slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    rms_time_Slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
+    addAndMakeVisible(rms_time_Slider);
+
     startTimerHz(30);
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -51,9 +55,11 @@ void PluginEditor::resized()
 {
     // layout the positions of your child components here
     auto area = getLocalBounds();
-    area.removeFromBottom(50);
+    area.removeFromRight(50);
     gainSlider.setBounds (area.withSizeKeepingCentre(100, 100));
 
+    area.removeFromRight(200);
+    rms_time_Slider.setBounds (area.withSizeKeepingCentre(100, 100));
 
     // 将响度条放在窗口右侧，宽度为30像素，上下留有20像素的边距
     auto bounds = getLocalBounds();
@@ -62,5 +68,5 @@ void PluginEditor::resized()
 void PluginEditor::timerCallback()
 {
     // 从处理器获取最新的dB值并设置到响度条上
-    verticalMeter.setLevel(processorRef.CompressorProcessorBase->getRMS() );
+    verticalMeter.setLevel(processorRef.VolumeBase->getRMS() );
 }

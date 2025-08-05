@@ -10,6 +10,8 @@ extern "C" {
 #endif
 
 #include "stdint.h"
+#include "circular_buffer.h"
+
 typedef struct _Compressortext
 {
     int xxx;
@@ -24,10 +26,18 @@ typedef struct _CompressorUnit
     uint32_t      		 enable;
 
     float                rms;
+    float                rms_time;
+
+    circular_buffer_float_t cb1;
+    circular_buffer_float_t cb2;
+
+    float buffer_mem1[22050];
+    float buffer_mem2[22050];
+
 }CompressorUnit;
 
 void Compressor_apply(CompressorUnit *Unit, float *in , float *out, uint32_t n);
-
+void Compressor_init(CompressorUnit *Unit, uint8_t channel, uint8_t sampleRate);
 #ifdef __cplusplus
 }
 #endif

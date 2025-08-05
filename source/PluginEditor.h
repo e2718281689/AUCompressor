@@ -20,6 +20,7 @@ public:
     void resized() override;
 
     juce::Slider gainSlider;
+    juce::Slider rms_time_Slider;
     LoudnessMeter verticalMeter;
 
 private:
@@ -33,6 +34,7 @@ private:
     std::unique_ptr<melatonin::Inspector> inspector;
 
     SliderVts sliderAttachment{ processorRef.apvts, "gainSlider", gainSlider };
+    SliderVts rms_time_slider_Attachment{ processorRef.apvts, "rms_time_Slider", rms_time_Slider };
 
 
     juce::TextButton inspectButton { "Inspect the UI" };

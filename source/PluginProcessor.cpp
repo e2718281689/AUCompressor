@@ -100,16 +100,16 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     AudioChain.AudioGroupInit();
 
     // add ProcessorNode
-    AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
-    auto node = AudioChain.addProcessorNode(std::make_unique < Compressor >(apvts));
+    // AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
+    auto node = AudioChain.addProcessorNode(std::make_unique < Volume >(apvts));
 
 
-    CompressorProcessorBase = dynamic_cast<Compressor*>(node->getProcessor());
+    VolumeBase = dynamic_cast<Volume*>(node->getProcessor());
 
-    if (CompressorProcessorBase)
+    if (VolumeBase)
     {
         // 转换成功！现在可以安全地调用 ProcessorBase 中的函数了
-        juce::Logger::outputDebugString("Successfully casted. Processor name is: " + CompressorProcessorBase->getName());
+        juce::Logger::outputDebugString("Successfully casted. Processor name is: " + VolumeBase->getName());
     }
     else
     {
@@ -203,6 +203,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::CreateParam
     "gainSlider",
     juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
     0.5f));
+
+    parameterLayout.add(std::make_unique<juce::AudioParameterFloat>(
+    "rms_time_Slider",
+    "rms_time_Slider",
+    juce::NormalisableRange<float>(0.0f, 22050.0f, 1.0f),
+    100.0f));
+
 
     return parameterLayout;
 }
