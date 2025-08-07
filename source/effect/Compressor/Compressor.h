@@ -14,28 +14,32 @@ class Compressor  : public ProcessorBase, public juce::AudioProcessorValueTreeSt
 public:
     Compressor(juce::AudioProcessorValueTreeState& apvts):Apvts(apvts)
     {
-        Apvts.addParameterListener("rms_time_Slider", this);
+
     }
 
     ~Compressor()
     {
-        Apvts.removeParameterListener("rms_time_Slider", this);
+
     }
 
     void parameterChanged(const juce::String& parameterID, float newValue)
     {
-        //  Listener parameter
-        if (parameterID.equalsIgnoreCase("rms_time_Slider"))
-        {
-            Compressor_Unit.rms_time = newValue;
-        }
+
     }
 
     void prepareToPlay(double sampleRate, int samplesPerBlock) override
     {
         Compressor_Unit.enable = 1;
+        Compressor_Unit.sample_rate = sampleRate;
+        Compressor_Unit.channel = 1;
+
+        Compressor_Unit.attack =  0.5;
+        Compressor_Unit.release = 0.002;
+        Compressor_Unit.threshold = -6;
+        Compressor_Unit.ratio = 5;
+
         Compressor_Unit.rms_time = Apvts.getParameterAsValue("rms_time_Slider").getValue();
-        Compressor_init(&Compressor_Unit,2,sampleRate);
+        Compressor_init(&Compressor_Unit,1,sampleRate);
     }
 
     void processBlock(juce::AudioSampleBuffer& buffer, juce::MidiBuffer&) override
@@ -48,16 +52,15 @@ public:
         float *pcm = new float[2 * numSamples];
         for (size_t i = 0; i < numSamples; ++i)
         {
-            pcm[2 * i + 1 ]=pcm_L[i];
-            pcm[2 * i + 0 ]=pcm_R[i];
+            pcm[i]=pcm_L[i] + pcm_R[i];
         }
 
         Compressor_apply(&Compressor_Unit,pcm,pcm, numSamples);
 
         for (size_t i = 0; i < numSamples; ++i)
         {
-            pcm_L[i] = pcm[2 * i + 1 ];
-            pcm_R[i] = pcm[2 * i + 0 ];
+            pcm_L[i] = pcm[i];
+            pcm_R[i] = pcm[i];
         }
 
         delete[] pcm;
@@ -78,7 +81,7 @@ public:
 
 private:
 
-    CompressorUnit Compressor_Unit;
+    CompressorUnit Compressor_Unit = {0};
 
     float  rmsDb = 0;
     juce::AudioProcessorValueTreeState& Apvts;

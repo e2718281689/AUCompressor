@@ -35,8 +35,8 @@ public:
     {
         size_t numSamples = buffer.getNumSamples();
 
-        float rms1 = buffer.getRMSLevel (0,1,numSamples);
-        float rms2 = buffer.getRMSLevel (0,2,numSamples);
+        float rms1 = buffer.getRMSLevel (0,0,numSamples);
+        float rms2 = buffer.getRMSLevel (1,0,numSamples);
 
         rmsDB = juce::Decibels::gainToDecibels(rms1 > rms2? rms1 : rms2);
     }

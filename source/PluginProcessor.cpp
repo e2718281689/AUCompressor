@@ -101,21 +101,26 @@ void PluginProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     // add ProcessorNode
     // AudioChain.addProcessorNode(std::make_unique < Gain >(apvts));
-    auto node = AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts));
+    // auto node = AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts));
+    //                                         AudioChain.addProcessorNode(std::make_unique < Compressor >(apvts));
+    // auto node1 = AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts));
 
+    VolumeBase = dynamic_cast<VolumeProc*>(AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts))->getProcessor());
 
-    VolumeBase = dynamic_cast<VolumeProc*>(node->getProcessor());
+                                            AudioChain.addProcessorNode(std::make_unique < Compressor >(apvts));
 
-    if (VolumeBase)
-    {
-        // 转换成功！现在可以安全地调用 ProcessorBase 中的函数了
-        juce::Logger::outputDebugString("Successfully casted. Processor name is: " + VolumeBase->getName());
-    }
-    else
-    {
-        // 转换失败。这可能是一个输入/输出节点，或者其他类型的节点
-        juce::Logger::outputDebugString("Failed to cast. This is not a ProcessorBase instance.");
-    }
+    VolumeBase_in = dynamic_cast<VolumeProc*>(AudioChain.addProcessorNode(std::make_unique < VolumeProc >(apvts))->getProcessor());
+
+    // if (VolumeBase)
+    // {
+    //     // 转换成功！现在可以安全地调用 ProcessorBase 中的函数了
+    //     juce::Logger::outputDebugString("Successfully casted. Processor name is: " + VolumeBase->getName());
+    // }
+    // else
+    // {
+    //     // 转换失败。这可能是一个输入/输出节点，或者其他类型的节点
+    //     juce::Logger::outputDebugString("Failed to cast. This is not a ProcessorBase instance.");
+    // }
 
 }
 
@@ -197,19 +202,6 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::CreateParameters()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout parameterLayout;
-
-    parameterLayout.add(std::make_unique<juce::AudioParameterFloat>(
-    "gainSlider",
-    "gainSlider",
-    juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f),
-    0.5f));
-
-    parameterLayout.add(std::make_unique<juce::AudioParameterFloat>(
-    "rms_time_Slider",
-    "rms_time_Slider",
-    juce::NormalisableRange<float>(0.0f, 22050.0f, 1.0f),
-    100.0f));
-
 
     return parameterLayout;
 }

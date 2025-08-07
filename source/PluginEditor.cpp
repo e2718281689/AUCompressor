@@ -18,14 +18,6 @@ PluginEditor::PluginEditor (PluginProcessor& p)
         inspector->setVisible (true);
     };
 
-    gainSlider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
-    addAndMakeVisible(gainSlider);
-
-    rms_time_Slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    rms_time_Slider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 80, 20);
-    addAndMakeVisible(rms_time_Slider);
-
     startTimerHz(30);
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -33,6 +25,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
 
     addAndMakeVisible(verticalMeter);
+    addAndMakeVisible(verticalMeter_in);
 }
 
 PluginEditor::~PluginEditor()
@@ -53,20 +46,16 @@ void PluginEditor::paint (juce::Graphics& g)
 
 void PluginEditor::resized()
 {
-    // layout the positions of your child components here
-    auto area = getLocalBounds();
-    area.removeFromRight(50);
-    gainSlider.setBounds (area.withSizeKeepingCentre(100, 100));
-
-    area.removeFromRight(200);
-    rms_time_Slider.setBounds (area.withSizeKeepingCentre(100, 100));
-
     // 将响度条放在窗口右侧，宽度为30像素，上下留有20像素的边距
     auto bounds = getLocalBounds();
     verticalMeter.setBounds(bounds.getRight() - 40, 20, 30, bounds.getHeight() - 40);
+
+    bounds = getLocalBounds();
+    verticalMeter_in.setBounds(20, 20, 30, bounds.getHeight() - 40);
 }
 void PluginEditor::timerCallback()
 {
     // 从处理器获取最新的dB值并设置到响度条上
     verticalMeter.setLevel(processorRef.VolumeBase->getRMS() );
+    verticalMeter_in.setLevel(processorRef.VolumeBase_in->getRMS() );
 }
